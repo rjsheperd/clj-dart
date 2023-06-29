@@ -1,0 +1,23 @@
+(ns acme.main
+  (:require ["dart:ffi" :as ffi]
+            ["dart:io" :as io :refer [Platform Directory]]
+            ["package:path/path.dart" :as path]
+            ["dart:developer" :refer [log debugger]]))
+
+(defn get-lib-path []
+  (cond
+    (.-isMacOS Platform)
+    (path/join (.-path (.-current Directory)) "hello_world" "libhello.dylib")
+
+    (.-isWindows Platform)
+    (path/join (.-path (.-current Directory)) "hello_world" "hello_library", "Debug", "hello.dll")
+
+    :else
+    (path/join (.-path (.-current Directory)) "hello_world" "libhello.so")))
+
+(defn main []
+  (let [lib-path (get-lib-path)
+        lib (ffi/DynamicLibrary.open lib-path)
+        ^#/(ffi/Pointer ffi/NativeFunction) hello_world (.lookup lib "hello_world")]
+    #_(println ((.asFunction hello_world)))
+    (println lib-path lib hello_world)))

@@ -1,0 +1,6 @@
+name: cljd_helper
+
+environment:
+  sdk: '>=2.17.0 <4.0.0'
+dependencies:
+  analyzer: 5.13.0
